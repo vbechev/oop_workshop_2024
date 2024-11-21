@@ -1,12 +1,14 @@
 import random
 from enum import Enum
 
-DamageType = Enum("DamageType", "FIRE WEAPON")
+DamageType = Enum("DamageType", "FIRE WEAPON RAKIA")
 
 
 class Character:
     _DAMAGE_MULTIPLIER = 5
+    IMMUNITIES = []
     RESISTANCES = []
+    VULNERABILITIES = []
 
     def __init__(self, name, health, ac, fav_posish, level=1):
         self.name = name
@@ -37,7 +39,7 @@ class Character:
     def cast(self, target):
         damage = self.damage / 2
         target.take_damage(damage, damage_type=DamageType.FIRE)
-
+        # Spells ALWAYS hit
         return True, 100, damage
 
     def attack(self, target):
@@ -55,15 +57,24 @@ class Character:
         return damage
 
 class Player(Character):
-    RESISTANCES = [DamageType.WEAPON]
     IMMUNITIES = [DamageType.RAKIA]
 
 class Enemy(Character):
     pass
 
 class Troll(Character):
-    RESISTANCES = [DamageType.FIRE]
+    RESISTANCES = [DamageType.WEAPON]
+    VULNERABILITIES = [DamageType.FIRE]
 
+class Weredickcissel(Character):
+    """Tis' a Dickcissel, a type of bird, which got cursed with Lycantrophy.
 
-player = Player("Sir Jorkata", 3.14**3, 10, "Pirate")
-enemy = Troll("Vankata", 20, 10, "CB", level=2)
+    Other cool bird names are:
+    - Satanic Nightjar, also called "Goatsucker"
+    - Blue-Footed Booby
+    - Penduline Tit
+    - Horned Screamer
+    - Fluffy-Bakced Tit-Babbler
+    - Rough-Faced Shag
+    """
+    IMMUNITIES = [DamageType.WEAPON]
