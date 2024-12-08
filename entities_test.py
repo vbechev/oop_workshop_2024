@@ -6,7 +6,7 @@ from entities import *
 
 
 class TestCharacter(unittest.TestCase):
-    """TODO"""
+    """Test the Character class."""
 
     def setUp(self):
         self.character = Character("Jorkata", 8, 10, "Pirate", level=1)
@@ -14,12 +14,14 @@ class TestCharacter(unittest.TestCase):
         self.troll = Troll("Jorkata", 8, 10, "Pirate", level=1)
 
     def test_take_damage(self):
+        """Characters' health should be reduced when taking damage."""
         jorkata = self.character
         damage_taken = jorkata.take_damage(7, None)
         self.assertEqual(damage_taken, 7)
         self.assertEqual(jorkata.health, 1)
 
     def test_take_damage_with_resistance(self):
+        """Characters should take half damage if they have resistance."""
         jorkata = self.troll
         damage_taken = jorkata.take_damage(8, DamageType.WEAPON)
         self.assertEqual(damage_taken, 4)
@@ -40,6 +42,7 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(jorkata.health, 8)
 
     def test_cast(self):
+        """Casting always hits, but does 1/2 of the character's damage."""
         jorkata = self.player
         target = self.character
         success, _, damage = jorkata.cast(target)
@@ -48,6 +51,7 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(target.health, 5.5)
 
     def test_attack_successful(self):
+        """Attacks have a chance to hit and deal full character damage."""
         jorkata = self.player
         target = self.character
         with patch('entities.randint', return_value=20) as mock_randint:

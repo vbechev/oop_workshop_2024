@@ -18,6 +18,7 @@ class Character:
         self.ac = ac + level
 
     def level_up(self):
+        """Increase character's level by one."""
         self.level += 1
 
     @property
@@ -37,12 +38,23 @@ class Character:
         self.__fav_posish = value
 
     def cast(self, target):
+        """Cast a spell.
+
+        Spells always hit, but do half of the character's danmage.
+        """
         damage = self.damage / 2
         target.take_damage(damage, damage_type=DamageType.FIRE)
         # Spells ALWAYS hit
         return True, 100, damage
 
     def attack(self, target):
+        """Attack another target.
+
+        Attacks hit based on simplified D&D rules:
+        - Roll a D20
+        - Compare with target AC
+        - That's basically it
+        """
         to_hit = randint(1, 20)
         if success := to_hit >= target.ac:
             damage = target.take_damage(self.damage, damage_type=DamageType.WEAPON)
@@ -51,6 +63,7 @@ class Character:
         return success, to_hit, damage
 
     def take_damage(self, damage, damage_type):
+        """"Calculate damage to be taken and reduce the health of the character."""
         if damage_type in self.IMMUNITIES:
             damage = 0
         if damage_type in self.RESISTANCES:
