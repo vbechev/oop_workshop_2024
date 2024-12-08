@@ -1,4 +1,4 @@
-import random
+from random import randint
 from enum import Enum
 
 DamageType = Enum("DamageType", "FIRE WEAPON RAKIA")
@@ -43,16 +43,20 @@ class Character:
         return True, 100, damage
 
     def attack(self, target):
-        to_hit = random.randint(1, 20)
+        to_hit = randint(1, 20)
         if success := to_hit >= target.ac:
             damage = target.take_damage(self.damage, damage_type=DamageType.WEAPON)
+        else:
+            damage = 0
         return success, to_hit, damage
 
     def take_damage(self, damage, damage_type):
-        if damage_type in self.RESISTANCES:
-            damage /= 2
         if damage_type in self.IMMUNITIES:
             damage = 0
+        if damage_type in self.RESISTANCES:
+            damage /= 2
+        if damage_type in self.VULNERABILITIES:
+            damage *= 2
         self.health -= damage
         return damage
 
