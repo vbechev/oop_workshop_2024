@@ -4,6 +4,18 @@ from enum import Enum
 DamageType = Enum("DamageType", "FIRE WEAPON RAKIA")
 
 
+def _character_type(name, **kwargs):
+    """A factory for character classes."""
+    available_args = [arg.lower() for arg in Character.__dict__ if arg.isupper()]
+    class_attrs = {}
+    for key, value in kwargs.items():
+        if key not in available_args:
+            raise TypeError(f'Keyword-arguments must be one of: {available_args}')
+        class_attrs[key.upper()] = value
+    return type(name, (Character,), class_attrs)
+CharacterType = _character_type
+
+
 class Character:
     _DAMAGE_MULTIPLIER = 5
     IMMUNITIES = []
@@ -73,16 +85,12 @@ class Character:
         self.health -= damage
         return damage
 
-class Player(Character):
-    IMMUNITIES = [DamageType.RAKIA]
 
-class Enemy(Character):
-    pass
+Player = CharacterType('Player', immunities=[DamageType.RAKIA])
+Troll = CharacterType('Troll', resistances=[DamageType.WEAPON], vulnerabilities=[DamageType.FIRE])
 
-class Troll(Character):
-    RESISTANCES = [DamageType.WEAPON]
-    VULNERABILITIES = [DamageType.FIRE]
-
+# Leaving the Weredickcissel for the docstring, but if you want to add a docstring "dynamically", you can do the following:
+# Weretit = type('Weretit', (Character,), {'__doc__': 'Tis\' a tit that was bitten by someone during full moon.'})
 class Weredickcissel(Character):
     """Tis' a Dickcissel, a type of bird, which got cursed with Lycantrophy.
 
