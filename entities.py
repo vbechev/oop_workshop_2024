@@ -1,7 +1,7 @@
 from random import randint
 from enum import Enum
 
-DamageType = Enum("DamageType", "FIRE WEAPON RAKIA")
+DamageType = Enum('DamageType', 'FIRE WEAPON RAKIA')
 
 
 def _character_type(name, **kwargs):
@@ -22,9 +22,10 @@ class Character:
     RESISTANCES = []
     VULNERABILITIES = []
 
-    def __init__(self, name, health, ac, fav_posish, level=1):
+    def __init__(self, name, life, mana, ac, fav_posish, level=1):
         self.name = name
-        self.health = health
+        self.life = life
+        self.mana = mana # In case we need it in the future
         self.__fav_posish = fav_posish
         self.level = level
         self.ac = ac + level
@@ -35,7 +36,7 @@ class Character:
 
     @property
     def alive(self):
-        return self.health > 0
+        return self.life > 0
 
     @property
     def damage(self):
@@ -50,10 +51,15 @@ class Character:
         self.__fav_posish = value
 
     def cast(self, target):
-        """Cast a spell.
+        """Cast a spell if there is enough mana available.
 
-        Spells always hit, but do half of the character's danmage.
+        Spells always hit, but do half of the character's damage.
         """
+        # Obviously this is data that would be saved way differently if this was a proper design
+        SPELL_COST = 2
+        if self.mana < SPELL_COST:
+            raise ValueError('Not enough mana!')
+        self.mana -= SPELL_COST
         damage = self.damage / 2
         target.take_damage(damage, damage_type=DamageType.FIRE)
         # Spells ALWAYS hit
@@ -82,7 +88,7 @@ class Character:
             damage /= 2
         if damage_type in self.VULNERABILITIES:
             damage *= 2
-        self.health -= damage
+        self.life -= damage
         return damage
 
 
