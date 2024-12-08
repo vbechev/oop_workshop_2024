@@ -65,5 +65,6 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(damage, 0)
         self.assertEqual(self.fire_vulnerable.health, 8)
 
+
 if __name__ == "__main__":
     unittest.main()
